@@ -1,10 +1,15 @@
-function App() {
+import Header from "./components/Header.jsx";
+import Main from "./main.jsx";
+import Footer from "./components/Footer.jsx";
 
-  return (
-    <>
-      <p className="text-red-500 font-mono text-center">Tailwind v4</p>
-    </>
-  )
+function App() {
+  return (  
+    <div className="min-h-screen bg-gray-50 font-mono">
+      <Header />
+      <Main />
+      <Footer />
+    </div>
+  );
 }
 
-export default App
+export default App;

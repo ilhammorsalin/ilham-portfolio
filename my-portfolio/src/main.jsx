@@ -1,10 +1,17 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import HomeSection from "./sections/HomeSection";
+import AboutSection from "./sections/AboutSection";
+import ProjectsSection from "./sections/ProjectsSection";
+import ContactSection from "./sections/ContactSection";
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+function Main() {
+  return (
+    <main className="p-8 max-w-3xl mx-auto">
+      <HomeSection />
+      <AboutSection />
+      <ProjectsSection />
+      <ContactSection />
+    </main>
+  );
+}
+
+export default Main;
