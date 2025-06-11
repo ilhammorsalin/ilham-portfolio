@@ -6,9 +6,6 @@ export default {
       rotate: {
         360: "360deg",
       },
-      animation: {
-        "spin-once": "spin 1s linear",
-      },
     },
   },
   plugins: [],

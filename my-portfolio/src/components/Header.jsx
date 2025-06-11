@@ -26,7 +26,7 @@ function Header() {
           <img
             src={elamDP}
             alt="Profile"
-            className="w-3/4 h-3/4 object-center transition-all duration-700 ease-in-out transform group-hover:rotate-360"
+            className="w-3/4 h-3/4 object-cover transition-transform duration-700 ease-in-out group-hover:rotate-360"
           />
         </div>
 
