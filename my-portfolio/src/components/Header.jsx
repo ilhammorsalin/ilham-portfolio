@@ -2,12 +2,6 @@ import { Link, useLocation } from "react-router-dom";
 import { FaHome, FaUser, FaCode, FaEnvelope } from "react-icons/fa";
 import elamDP from "../assets/elamDP.png";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "../sections/HomeSection.jsx";
-import About from "../sections/AboutSection.jsx";
-import Projects from "../sections/ProjectsSection.jsx";
-import Contact from "../sections/ContactSection.jsx";
-
 function Header() {
   const location = useLocation();
 
