@@ -1,33 +1,27 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-  createRoutesFromElements,
-} from "react-router-dom";
 import Header from "./components/Header.jsx";
-import Main from "./main.jsx";
 import Footer from "./components/Footer.jsx";
+import HomeSection from "./sections/HomeSection.jsx";
+import AboutSection from "./sections/AboutSection.jsx";
+import ProjectsSection from "./sections/ProjectsSection.jsx";
+import ContactSection from "./sections/ContactSection.jsx";
+import NotFound from "./sections/NotFound.jsx";
 
-function App() {
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route
-        path="/"
-        element={
-          <div className="min-h-screen bg-gray-50 font-mono">
-            <Header />
-            <Main />
-            <Footer />
-          </div>
-        }>
-        <Route path="about" element={<Main />} />
-        <Route path="projects" element={<Main />} />
-        <Route path="contact" element={<Main />} />
-      </Route>
-    )
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" element={<HomeSection />} />
+        <Route path="/about" element={<AboutSection />} />
+        <Route path="/projects" element={<ProjectsSection />} />
+        <Route path="/contact" element={<ContactSection />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Footer />
+    </BrowserRouter>
   );
-
-  return <RouterProvider router={router} />;
-}
+};
 
 export default App;

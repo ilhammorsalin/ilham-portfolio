@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Portfolio Website",
+    "description": "A personal portfolio website built with React and Tailwind CSS, showcasing my projects and skills.",
+    "techList": ["React", "Tailwind CSS"]
+  },
+  {
+    "title": "Task Manager",
+    "description": "A full-stack task management application with user authentication and real-time updates.",
+    "techList": ["Node.js", "MongoDB", "Express.js"]
+  }
+]
