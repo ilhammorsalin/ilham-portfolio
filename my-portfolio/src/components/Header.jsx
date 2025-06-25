@@ -4,8 +4,8 @@ function Header() {
   return (
     <div className="w-full fixed top-0 z-50">
       <header className="bg-gradient-to-r from-amber-50 to-amber-100 shadow-md p-6">
-        <div className="container mx-auto flex justify-between items-center">
-          <nav className="flex gap-4">
+        <div className="container mx-auto flex justify-between">
+          <nav className="flex items-center gap-4">
             <Link to="/">
               <button className="text-amber-500 font-semibold hover:text-amber-600 transition-colors duration-200">
                 Home
@@ -24,6 +24,16 @@ function Header() {
             <Link to="/contact">
               <button className="text-amber-500 font-semibold hover:text-amber-600 transition-colors duration-200">
                 Contact
+              </button>
+            </Link>
+
+            <Link to="/contact">
+              <button
+                className="text-amber-500 font-semibold 
+              hover:text-amber-600 hover:text-xl hover:translate 
+              transition-all duration-300 ease-in-out
+              hover:translate-x-2">
+                Experimental
               </button>
             </Link>
           </nav>
