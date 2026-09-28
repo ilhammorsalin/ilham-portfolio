@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ilham Morsalin | Brutalist Portfolio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        canvas: '#F3F0E6',
+                        ink: '#000000',
+                        accent: '#FF2A00',
+                        secondary: '#4A4A4A'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'brutal': '8px 8px 0px 0px #000000',
+                        'brutal-hover': '4px 4px 0px 0px #000000',
+                        'brutal-lg': '12px 12px 0px 0px #000000',
+                    },
+                    animation: {
+                        'marquee': 'marquee 12s linear infinite',
+                        'marquee-reverse': 'marquee-reverse 25s linear infinite',
+                        'glitch': 'glitch 0.3s ease-in-out',
+                        'blink': 'blink 1.2s step-end infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FIREBASE (compat) for the chat database -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+        body {
+            background-color: #F3F0E6;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            color: #000;
+        }
+        * { transition: none !important; border-radius: 0 !important; }
+        ::selection { background-color: #FF2A00; color: #FFF; }
+
+        /* Cursor */
+        .custom-cursor { width:24px;height:24px;border:3px solid #FF2A00;position:fixed;pointer-events:none;z-index:99999;top:0;left:0; }
+        .custom-cursor.hover { width:48px;height:48px;background:rgba(255,42,0,.2);border-color:#000; }
+
+        /* Marquees */
+        @keyframes marquee { 0%{transform:translateX(-50%);} 100%{transform:translateX(0);} }
+        @keyframes marquee-reverse { 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
+        @keyframes glitch { 0%,100%{transform:translate(0);} 20%{transform:translate(-2px,2px);} 40%{transform:translate(-2px,-2px);} 60%{transform:translate(2px,2px);} 80%{transform:translate(2px,-2px);} }
+        .glitch-hover:hover { animation: glitch .3s ease-in-out; }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+        /* Reveal */
+        .reveal { opacity:0; transform:translateY(30px); }
+        .reveal.active { opacity:1; transform:translateY(0); }
+
+        /* Progress */
+        .progress-bar { height:4px;background:#FF2A00;width:0%;transition:width .1s linear; }
+
+        .magnetic { transition: transform .3s cubic-bezier(.25,.46,.45,.94) !important; }
+        .filter-btn.active { background-color:#FF2A00 !important;color:#F3F0E6 !important; }
+        .nav-link.active { background-color:#FF2A00 !important;color:#F3F0E6 !important;border-color:#FF2A00 !important; }
+
+        ::-webkit-scrollbar { width:12px; }
+        ::-webkit-scrollbar-track { background:#F3F0E6;border-left:3px solid #000; }
+        ::-webkit-scrollbar-thumb { background:#000; }
+        ::-webkit-scrollbar-thumb:hover { background:#FF2A00; }
+
+        .mosaic-grid { background-image:linear-gradient(rgba(255,255,255,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.1) 1px,transparent 1px);background-size:16px 16px; }
+
+        @keyframes ripple { 0%{width:20px;height:20px;opacity:1;} 100%{width:100px;height:100px;opacity:0;} }
+
+        /* ===== CHAT TAKEOVER ===== */
+        #chatTakeover { display:none; }
+        #chatTakeover.open { display:flex; animation: takeoverIn .25s cubic-bezier(.2,.9,.3,1.2) both; }
+        @keyframes takeoverIn { from{opacity:0;transform:scale(.96) translateY(20px);} to{opacity:1;transform:none;} }
+
+        .chat-scroll { scrollbar-width:thin; scrollbar-color:#FF2A00 #000; }
+        .chat-scroll::-webkit-scrollbar { width:8px; }
+        .chat-scroll::-webkit-scrollbar-track { background:#000; }
+        .chat-scroll::-webkit-scrollbar-thumb { background:#FF2A00; }
+
+        .msg-in { animation: msgIn .2s ease-out both; }
+        @keyframes msgIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:none;} }
+
+        .typing-dot { width:7px;height:7px;background:#FF2A00;display:inline-block;animation:blink 1s infinite; }
+        .typing-dot:nth-child(2){ animation-delay:.2s; }
+        .typing-dot:nth-child(3){ animation-delay:.4s; }
+    </style>
+</head>
+<body class="antialiased min-h-screen p-4 md:p-12 lg:p-16 font-sans selection:bg-accent selection:text-white">
+
+    <div class="custom-cursor" id="cursor"></div>
+
+    <div class="fixed top-0 left-0 w-full z-[100]"><div class="progress-bar" id="progressBar"></div></div>
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-1 left-0 right-0 z-[90] px-4 md:px-12 lg:px-16">
+        <div class="max-w-7xl mx-auto border-4 border-ink bg-canvas shadow-brutal flex items-center justify-between">
+            <a href="#hero" class="flex items-center gap-0 group">
+                <div class="bg-ink text-canvas px-3 md:px-5 py-3 md:py-4 font-black uppercase text-lg md:text-2xl tracking-tighter border-r-4 border-ink group-hover:bg-accent group-hover:text-ink">ILHAM<span class="text-accent group-hover:text-ink">.</span>M</div>
+                <div class="hidden sm:block px-3 font-mono text-[10px] font-bold uppercase text-secondary">PORTFOLIO.SYS<br>// V.01</div>
+            </a>
+            <div class="flex">
+                <a href="#projects" class="nav-link border-l-4 border-ink px-3 md:px-5 py-3 md:py-4 font-black uppercase text-xs md:text-sm hover:bg-ink hover:text-canvas flex items-center gap-2"><span class="hidden md:inline">/01</span>PROJECTS</a>
+                <a href="#about" class="nav-link border-l-4 border-ink px-3 md:px-5 py-3 md:py-4 font-black uppercase text-xs md:text-sm hover:bg-ink hover:text-canvas flex items-center gap-2"><span class="hidden md:inline">/02</span>ABOUT</a>
+                <a href="#connect" class="nav-link border-l-4 border-ink px-3 md:px-5 py-3 md:py-4 font-black uppercase text-xs md:text-sm bg-accent text-ink hover:bg-ink hover:text-canvas flex items-center gap-2"><span class="hidden md:inline">/03</span>CONNECT ↗</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto border-4 border-ink bg-canvas flex flex-col relative overflow-hidden shadow-brutal-lg mt-24 md:mt-28">
+        
+        <div class="absolute top-0 right-0 w-1/3 h-96 bg-accent -z-10 mix-blend-multiply opacity-90 hidden md:block border-l-4 border-b-4 border-ink"></div>
+
+        <!-- HERO -->
+        <header id="hero" class="border-b-4 border-ink relative z-10 p-8 md:p-16 lg:p-24 scroll-mt-24">
+            <div class="font-mono text-xs md:text-sm font-bold uppercase mb-6 text-ink flex justify-between">
+                <span>PORTFOLIO.DOC // 2026</span>
+                <span>VOL. 01 // ILHAM_MORSALIN</span>
+            </div>
+            <h1 class="text-[14vw] sm:text-[12vw] lg:text-[10vw] font-black uppercase leading-[0.8] tracking-tighter text-ink mix-blend-color-burn glitch-hover">Ilham<br><span class="text-accent">Morsalin</span></h1>
+            <div class="mt-12 md:mt-16 flex flex-wrap gap-4 font-mono text-xs md:text-sm font-bold uppercase">
+                <div class="border-2 border-ink px-4 py-2 hover:bg-ink hover:text-canvas cursor-pointer">SOFTWARE ENGINEER</div>
+                <div class="border-2 border-ink px-4 py-2 hover:bg-ink hover:text-canvas cursor-pointer">FULL STACK DEV</div>
+                <div class="border-2 border-ink px-4 py-2 hover:bg-ink hover:text-canvas cursor-pointer">GAME DEVELOPER</div>
+            </div>
+        </header>
+
+        <!-- Marquee -->
+        <div class="border-b-4 border-ink bg-ink text-canvas overflow-hidden py-4">
+            <div class="flex whitespace-nowrap animate-marquee">
+                <span class="text-4xl md:text-6xl font-black uppercase mx-8">FREELANCE DEVELOPER</span><span class="text-4xl md:text-6xl font-black uppercase mx-8 text-accent">★</span>
+                <span class="text-4xl md:text-6xl font-black uppercase mx-8">REACT SPECIALIST</span><span class="text-4xl md:text-6xl font-black uppercase mx-8 text-accent">★</span>
+                <span class="text-4xl md:text-6xl font-black uppercase mx-8">AI INTEGRATION</span><span class="text-4xl md:text-6xl font-black uppercase mx-8 text-accent">★</span>
+                <span class="text-4xl md:text-6xl font-black uppercase mx-8">FREELANCE DEVELOPER</span><span class="text-4xl md:text-6xl font-black uppercase mx-8 text-accent">★</span>
+                <span class="text-4xl md:text-6xl font-black uppercase mx-8">REACT SPECIALIST</span><span class="text-4xl md:text-6xl font-black uppercase mx-8 text-accent">★</span>
+                <span class="text-4xl md:text-6xl font-black uppercase mx-8">AI INTEGRATION</span><span class="text-4xl md:text-6xl font-black uppercase mx-8 text-accent">★</span>
+            </div>
+        </div>
+
+        <!-- Contact Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-4 border-b-4 border-ink font-mono text-xs font-bold uppercase divide-y-4 md:divide-y-0 md:divide-x-4 divide-ink">
+            <div class="p-8 bg-ink text-canvas flex flex-col justify-center items-start"><span class="text-accent mb-2">ROLE</span><span class="text-base md:text-lg">FREELANCE<br>SOFTWARE ENGINEER</span></div>
+            <div class="p-8 flex flex-col justify-center bg-canvas"><span class="text-secondary mb-2">CONTACT</span><a href="tel:01303454384" class="hover:text-accent hover:underline text-base">01303454384</a><a href="mailto:ilhammorsalin@gmail.com" class="hover:text-accent hover:underline break-all mt-2 text-base">ilhammorsalin@gmail.com</a></div>
+            <div class="p-8 flex flex-col justify-center bg-canvas"><span class="text-secondary mb-2">LOCATIONS</span><span class="text-base">Chattogram, Bangladesh</span><span class="mt-2 text-base">Dhaka, Bangladesh</span></div>
+            <div class="p-8 flex flex-col justify-center bg-canvas gap-3"><span class="text-secondary mb-2">NETWORK</span><div class="flex flex-col gap-2 items-start"><a href="https://github.com/ilhammorsalin" target="_blank" class="border-2 border-ink px-4 py-2 hover:bg-accent hover:text-ink w-full text-center magnetic">GITHUB ↗</a><a href="https://www.linkedin.com/feed/" target="_blank" class="border-2 border-ink px-4 py-2 hover:bg-accent hover:text-ink w-full text-center magnetic">LINKEDIN ↗</a></div></div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about" class="border-b-4 border-ink bg-canvas scroll-mt-24">
+            <div class="p-8 md:p-12 border-b-4 border-ink">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                    <div><div class="font-mono text-xs font-bold mb-2 flex items-center gap-2"><div class="w-2 h-2 bg-accent"></div><span>SEC.01 // EDUCATION_TIMELINE</span></div><h2 class="text-3xl md:text-5xl font-black uppercase leading-none tracking-tight">Academic Path</h2></div>
+                    <div class="font-mono text-xs font-bold text-secondary">3 STAGES // 2008 → 2027</div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-0 md:border-4 md:border-ink relative">
+                    <div class="border-4 md:border-r-4 border-ink bg-canvas hover:bg-accent group cursor-default flex gap-4 md:block">
+                        <div class="bg-ink text-canvas p-3 flex items-center justify-center text-3xl md:text-4xl md:border-b-4 md:border-ink min-w-[60px] md:min-w-0 group-hover:bg-canvas group-hover:text-ink group-hover:border-accent">👦</div>
+                        <div class="p-4 flex-grow"><div class="font-mono text-[10px] font-bold mb-1 flex items-center gap-2"><span class="bg-accent text-ink px-1.5 py-0.5">STAGE 1</span><span>2008—2022</span></div><h3 class="text-base md:text-lg font-black uppercase leading-tight mb-1">Radiant School<br>& College</h3><p class="font-mono text-[11px] text-secondary group-hover:text-ink">SSC // SCIENCE<br>Chattogram</p></div>
+                    </div>
+                    <div class="border-4 md:border-r-4 md:border-l-0 border-ink bg-canvas hover:bg-ink hover:text-canvas group cursor-default flex gap-4 md:block">
+                        <div class="bg-accent text-ink p-3 flex items-center justify-center text-3xl md:text-4xl md:border-b-4 md:border-ink min-w-[60px] md:min-w-0 group-hover:bg-canvas group-hover:text-ink group-hover:border-canvas">🧑</div>
+                        <div class="p-4 flex-grow"><div class="font-mono text-[10px] font-bold mb-1 flex items-center gap-2"><span class="bg-ink text-canvas px-1.5 py-0.5 group-hover:bg-accent group-hover:text-ink">STAGE 2</span><span>2022—2023</span></div><h3 class="text-base md:text-lg font-black uppercase leading-tight mb-1">Cantonment English<br>School & College</h3><p class="font-mono text-[11px] text-secondary group-hover:text-canvas">HSC // SCIENCE<br>Chattogram</p></div>
+                    </div>
+                    <div class="border-4 md:border-l-0 border-ink bg-canvas hover:bg-accent group cursor-default flex gap-4 md:block">
+                        <div class="bg-ink text-canvas p-3 flex items-center justify-center text-3xl md:text-4xl md:border-b-4 md:border-ink min-w-[60px] md:min-w-0 group-hover:bg-canvas group-hover:text-ink group-hover:border-accent">🧑‍🎓</div>
+                        <div class="p-4 flex-grow"><div class="font-mono text-[10px] font-bold mb-1 flex items-center gap-2"><span class="bg-accent text-ink px-1.5 py-0.5">CURRENT</span><span>2024—2027</span></div><h3 class="text-base md:text-lg font-black uppercase leading-tight mb-1">BRAC University</h3><p class="font-mono text-[11px] text-accent group-hover:text-ink font-bold">BSC // COMPUTER SCIENCE<br>Dhaka</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-ink text-canvas p-8 md:p-12 relative overflow-hidden">
+                <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiMzMzMzMzMiLz48L3N2Zz4=')] opacity-20"></div>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 relative z-10 gap-6">
+                    <div class="font-mono text-xs font-bold text-accent">SYS.REQ // TECHNICAL_STACK</div>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-btn active border-2 border-canvas px-3 py-1.5 font-mono text-[10px] font-bold uppercase hover:bg-accent hover:border-accent" data-filter="all">ALL</button>
+                        <button class="filter-btn border-2 border-canvas px-3 py-1.5 font-mono text-[10px] font-bold uppercase hover:bg-accent hover:border-accent" data-filter="language">LANGUAGES</button>
+                        <button class="filter-btn border-2 border-canvas px-3 py-1.5 font-mono text-[10px] font-bold uppercase hover:bg-accent hover:border-accent" data-filter="framework">FRAMEWORKS</button>
+                        <button class="filter-btn border-2 border-canvas px-3 py-1.5 font-mono text-[10px] font-bold uppercase hover:bg-accent hover:border-accent" data-filter="tool">TOOLS</button>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-3 md:gap-4 relative z-10" id="skillsGrid">
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair" data-category="language">Java</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair" data-category="language">Javascript</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair" data-category="language">Python</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair bg-canvas text-ink" data-category="language">HTML</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair bg-canvas text-ink" data-category="language">CSS</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair text-accent border-accent" data-category="framework">React</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair text-accent border-accent" data-category="framework">Node.js</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair text-accent border-accent" data-category="framework">Express.js</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair" data-category="framework">Tailwind</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair" data-category="tool">VS Code</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair" data-category="tool">Figma</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair" data-category="tool">Github</div>
+                    <div class="skill-item border-2 border-canvas px-4 py-2 font-black uppercase text-sm md:text-lg hover:bg-accent hover:border-accent hover:text-ink cursor-crosshair" data-category="tool">Godot</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects" class="p-8 md:p-12 bg-canvas scroll-mt-24">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b-4 border-ink pb-6">
+                <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none">Archive // Projects</h2>
+                <div class="font-mono font-bold mt-4 md:mt-0 text-accent text-sm md:text-base">STATUS: ACTIVE // QTY: 05</div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                
+                <article class="border-4 border-ink bg-canvas flex flex-col shadow-brutal hover:bg-accent hover:text-ink hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-brutal-hover group reveal">
+                    <div class="relative h-40 border-b-4 border-ink overflow-hidden flex items-center justify-center" style="background-color:#000;">
+                        <div class="absolute inset-0 mosaic-grid"></div>
+                        <div class="absolute inset-0" style="background-image:linear-gradient(45deg,#FF2A00 25%,transparent 25%),linear-gradient(-45deg,#FF2A00 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#FF2A00 75%),linear-gradient(-45deg,transparent 75%,#FF2A00 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0px;opacity:.6;"></div>
+                        <div class="relative z-10 text-center"><div class="text-5xl font-black text-canvas uppercase leading-none">NEXUS</div><div class="font-mono text-[10px] font-bold text-canvas mt-1">// AI_SYSTEM</div></div>
+                        <div class="absolute top-2 right-2 bg-accent text-ink font-mono text-[10px] px-2 py-1 font-bold uppercase">LIVE</div>
+                    </div>
+                    <div class="border-b-4 border-ink p-2 px-3 flex justify-between font-mono text-[10px] font-bold uppercase bg-ink text-canvas group-hover:text-accent"><span>PRJ.01</span><span>FULL STACK</span></div>
+                    <div class="p-5 flex-grow"><h3 class="text-2xl font-black uppercase leading-none mb-2">Nexus AI</h3><p class="font-bold border-l-4 border-ink pl-3 text-sm min-h-[40px] flex items-center group-hover:border-ink">Agentic AI powered communication concierge</p><div class="mt-3 font-mono text-[10px] text-secondary group-hover:text-ink"><span class="block">ROLE: Lead Developer</span><span class="block mt-0.5">TYPE: SaaS Application</span></div></div>
+                    <div class="grid grid-cols-3 border-t-4 border-ink font-mono text-[10px] font-bold divide-x-4 divide-ink text-center"><div class="p-2">React</div><div class="p-2">Node.js</div><div class="p-2">Express</div></div>
+                    <a href="https://nexus-ai-tool.vercel.app/login" target="_blank" class="block w-full border-t-4 border-ink bg-canvas text-ink p-3 text-center font-black uppercase text-base hover:bg-ink hover:text-canvas magnetic">Launch ↗</a>
+                </article>
+
+                <article class="border-4 border-ink bg-canvas flex flex-col shadow-brutal hover:bg-accent hover:text-ink hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-brutal-hover group reveal">
+                    <div class="relative h-40 border-b-4 border-ink overflow-hidden bg-secondary flex items-center justify-center">
+                        <div class="absolute inset-0 mosaic-grid"></div>
+                        <div class="absolute inset-0" style="background-image:linear-gradient(45deg,#FF2A00 25%,transparent 25%),linear-gradient(-45deg,#FF2A00 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#FF2A00 75%),linear-gradient(-45deg,transparent 75%,#FF2A00 75%);background-size:30px 30px;background-position:0 0,0 15px,15px -15px,-15px 0px;opacity:.4;"></div>
+                        <div class="relative z-10 text-center"><div class="text-5xl">🍎</div><div class="font-mono text-[10px] font-bold text-canvas mt-1">// DIGITAL_FRIDGE</div></div>
+                        <div class="absolute top-2 right-2 bg-accent text-ink font-mono text-[10px] px-2 py-1 font-bold uppercase">LIVE</div>
+                    </div>
+                    <div class="border-b-4 border-ink p-2 px-3 flex justify-between font-mono text-[10px] font-bold uppercase bg-ink text-canvas group-hover:text-accent"><span>PRJ.02</span><span>FULL STACK + AI</span></div>
+                    <div class="p-5 flex-grow"><h3 class="text-2xl font-black uppercase leading-none mb-2">Digital Fridge</h3><p class="font-bold border-l-4 border-ink pl-3 text-sm min-h-[40px] flex items-center group-hover:border-ink">AI-powered recipe generator based on user ingredients</p><div class="mt-3 font-mono text-[10px] text-secondary group-hover:text-ink"><span class="block">ROLE: Full Stack Developer</span><span class="block mt-0.5">TYPE: Web Application</span></div></div>
+                    <div class="grid grid-cols-3 border-t-4 border-ink font-mono text-[10px] font-bold divide-x-4 divide-ink text-center"><div class="p-2">React</div><div class="p-2">Node.js</div><div class="p-2">Express</div></div>
+                    <a href="https://digitalfridge-frontend.onrender.com/" target="_blank" class="block w-full border-t-4 border-ink bg-canvas text-ink p-3 text-center font-black uppercase text-base hover:bg-ink hover:text-canvas magnetic">Launch ↗</a>
+                </article>
+
+                <article class="border-4 border-ink bg-canvas flex flex-col shadow-brutal hover:bg-accent hover:text-ink hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-brutal-hover group reveal">
+                    <div class="relative h-40 border-b-4 border-ink overflow-hidden bg-ink flex items-center justify-center">
+                        <div class="absolute inset-0" style="background-image:repeating-linear-gradient(0deg,rgba(255,42,0,.3) 0px,rgba(255,42,0,.3) 2px,transparent 2px,transparent 16px),repeating-linear-gradient(90deg,rgba(255,42,0,.3) 0px,rgba(255,42,0,.3) 2px,transparent 2px,transparent 16px);"></div>
+                        <div class="relative z-10 text-center"><div class="text-5xl">🎮</div><div class="font-mono text-[10px] font-bold text-canvas mt-1">// GAME_JAM</div></div>
+                        <div class="absolute top-2 right-2 bg-accent text-ink font-mono text-[10px] px-2 py-1 font-bold uppercase">GAME</div>
+                    </div>
+                    <div class="border-b-4 border-ink p-2 px-3 flex justify-between font-mono text-[10px] font-bold uppercase bg-ink text-canvas group-hover:text-accent"><span>PRJ.03</span><span>GAME DEV</span></div>
+                    <div class="p-5 flex-grow"><h3 class="text-2xl font-black uppercase leading-none mb-2">Bidroher Prohor</h3><p class="font-bold border-l-4 border-ink pl-3 text-sm min-h-[40px] flex items-center group-hover:border-ink">2D platformer created for a Game Jam with a team of 3</p><div class="mt-3 font-mono text-[10px] text-secondary group-hover:text-ink"><span class="block">ROLE: Team Collaborator</span><span class="block mt-0.5">TIMELINE: 1 Week Jam</span></div></div>
+                    <div class="grid grid-cols-2 border-t-4 border-ink font-mono text-[10px] font-bold divide-x-4 divide-ink text-center"><div class="p-2">Godot</div><div class="p-2">GDScript</div></div>
+                    <a href="https://digitalfridge-frontend.onrender.com/" target="_blank" class="block w-full border-t-4 border-ink bg-canvas text-ink p-3 text-center font-black uppercase text-base hover:bg-ink hover:text-canvas magnetic">Play Game ↗</a>
+                </article>
+
+                <article class="border-4 border-ink bg-canvas flex flex-col shadow-brutal hover:bg-accent hover:text-ink hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-brutal-hover group reveal">
+                    <div class="relative h-40 border-b-4 border-ink overflow-hidden bg-canvas flex items-center justify-center">
+                        <div class="absolute inset-0 mosaic-grid"></div>
+                        <div class="absolute inset-0 opacity-30" style="background-image:linear-gradient(45deg,#000 25%,transparent 25%),linear-gradient(-45deg,#000 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#000 75%),linear-gradient(-45deg,transparent 75%,#000 75%);background-size:40px 40px;background-position:0 0,0 20px,20px -20px,-20px 0px;"></div>
+                        <div class="relative z-10 text-center"><div class="text-5xl font-black text-ink uppercase leading-none">A</div><div class="font-mono text-[10px] font-bold text-secondary mt-1">// PORTFOLIO_DESIGN</div></div>
+                        <div class="absolute top-2 right-2 bg-secondary text-canvas font-mono text-[10px] px-2 py-1 font-bold uppercase">ARCHIVED</div>
+                    </div>
+                    <div class="border-b-4 border-ink p-2 px-3 flex justify-between font-mono text-[10px] font-bold uppercase bg-ink text-canvas group-hover:text-accent"><span>PRJ.04</span><span>DESIGN / DEV</span></div>
+                    <div class="p-5 flex-grow"><h3 class="text-2xl font-black uppercase leading-none mb-2">Ayoto Portfolio</h3><p class="font-bold border-l-4 border-ink pl-3 text-sm min-h-[40px] flex items-center group-hover:border-ink">Design Redesign & Phase 2 Implementation</p><div class="mt-3 font-mono text-[10px] text-secondary group-hover:text-ink"><span class="block">ROLE: Frontend Dev</span><span class="block mt-0.5">TYPE: Client Project</span></div></div>
+                    <div class="grid grid-cols-1 border-t-4 border-ink font-mono text-[10px] font-bold text-center"><div class="p-2">Frontend Architecture</div></div>
+                    <div class="block w-full border-t-4 border-ink bg-secondary text-canvas p-3 text-center font-black uppercase text-base">Archived 🔒</div>
+                </article>
+
+                <article class="border-4 border-ink bg-canvas flex flex-col shadow-brutal hover:bg-accent hover:text-ink hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-brutal-hover group reveal">
+                    <div class="relative h-40 border-b-4 border-ink overflow-hidden bg-accent flex items-center justify-center">
+                        <div class="absolute inset-0 mosaic-grid"></div>
+                        <div class="relative z-10 text-center"><div class="text-5xl font-black text-canvas uppercase leading-none">R</div><div class="font-mono text-[10px] font-bold text-canvas mt-1">// PORTFOLIO_DEV</div></div>
+                        <div class="absolute top-2 right-2 bg-ink text-canvas font-mono text-[10px] px-2 py-1 font-bold uppercase">ARCHIVED</div>
+                    </div>
+                    <div class="border-b-4 border-ink p-2 px-3 flex justify-between font-mono text-[10px] font-bold uppercase bg-ink text-canvas group-hover:text-accent"><span>PRJ.05</span><span>WEB DEV</span></div>
+                    <div class="p-5 flex-grow"><h3 class="text-2xl font-black uppercase leading-none mb-2">Ritoshi Portfolio</h3><p class="font-bold border-l-4 border-ink pl-3 text-sm min-h-[40px] flex items-center group-hover:border-ink">Custom personal portfolio development</p><div class="mt-3 font-mono text-[10px] text-secondary group-hover:text-ink"><span class="block">ROLE: Full Developer</span><span class="block mt-0.5">TYPE: Client Project</span></div></div>
+                    <div class="grid grid-cols-1 border-t-4 border-ink font-mono text-[10px] font-bold text-center"><div class="p-2">Frontend Architecture</div></div>
+                    <div class="block w-full border-t-4 border-ink bg-secondary text-canvas p-3 text-center font-black uppercase text-base">Archived 🔒</div>
+                </article>
+
+                <a href="https://github.com/ilhammorsalin" target="_blank" class="border-4 border-dashed border-ink bg-canvas flex flex-col items-center justify-center p-8 shadow-brutal hover:bg-ink hover:text-canvas hover:border-solid hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-brutal-hover group reveal min-h-[400px]">
+                    <div class="text-5xl font-black uppercase mb-3">+05</div>
+                    <div class="font-mono text-[10px] font-bold mb-2">MORE PROJECTS</div>
+                    <div class="border-2 border-ink px-5 py-2 font-black uppercase text-sm group-hover:bg-accent group-hover:text-ink group-hover:border-accent mt-3">View All Projects ↗</div>
+                    <div class="font-mono text-[10px] mt-5 text-secondary group-hover:text-canvas">// CHECK_GITHUB_REPO</div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- Reverse Marquee -->
+        <div class="border-b-4 border-ink bg-canvas overflow-hidden py-6">
+            <div class="flex whitespace-nowrap animate-marquee-reverse">
+                <span class="text-5xl md:text-7xl font-black uppercase mx-10 text-accent">FULL STACK</span><span class="text-5xl md:text-7xl font-black uppercase mx-10">◆</span>
+                <span class="text-5xl md:text-7xl font-black uppercase mx-10 text-accent">AI INTEGRATION</span><span class="text-5xl md:text-7xl font-black uppercase mx-10">◆</span>
+                <span class="text-5xl md:text-7xl font-black uppercase mx-10 text-accent">GAME DEV</span><span class="text-5xl md:text-7xl font-black uppercase mx-10">◆</span>
+                <span class="text-5xl md:text-7xl font-black uppercase mx-10 text-accent">FULL STACK</span><span class="text-5xl md:text-7xl font-black uppercase mx-10">◆</span>
+                <span class="text-5xl md:text-7xl font-black uppercase mx-10 text-accent">AI INTEGRATION</span><span class="text-5xl md:text-7xl font-black uppercase mx-10">◆</span>
+                <span class="text-5xl md:text-7xl font-black uppercase mx-10 text-accent">GAME DEV</span><span class="text-5xl md:text-7xl font-black uppercase mx-10">◆</span>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- CONNECT WITH ME — Full-screen chat takeover  -->
+        <!-- ============================================ -->
+        <section id="connect" class="relative overflow-hidden bg-ink text-canvas scroll-mt-24">
+            <div class="absolute inset-0" style="background-image:repeating-linear-gradient(45deg,rgba(255,42,0,.06) 0px,rgba(255,42,0,.06) 2px,transparent 2px,transparent 24px);"></div>
+
+            <div class="relative z-10 p-10 md:p-20 text-center flex flex-col items-center">
+                <div class="font-mono text-xs font-bold text-accent mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-accent animate-blink"></span> SEC.03 // OPEN_CHANNEL
+                </div>
+
+                <h2 class="text-6xl md:text-8xl font-black uppercase leading-[0.85] tracking-tighter mb-6">
+                    Got an idea?<br><span class="text-accent">Let’s talk.</span>
+                </h2>
+
+                <p class="font-mono text-sm md:text-base max-w-xl text-canvas/80 mb-10 leading-relaxed">
+                    No forms. No login. No emails. Just drop a quick message below —
+                    like texting a friend. Ilham reads every single one and will get back to you when he sees it.
+                </p>
+
+                <button onclick="openChat()" class="magnetic group relative border-4 border-canvas bg-accent text-ink px-10 md:px-14 py-5 md:py-6 font-black uppercase text-xl md:text-2xl shadow-brutal hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-brutal-hover">
+                    <span class="flex items-center gap-3">💬 SAY HELLO</span>
+                    <span class="absolute -top-3 -right-3 bg-canvas text-ink border-2 border-ink font-mono text-[10px] font-bold px-2 py-0.5">1 MSG ONLY</span>
+                </button>
+
+                <div class="mt-10 flex flex-wrap justify-center gap-3 font-mono text-[10px] font-bold uppercase">
+                    <span class="border-2 border-canvas/40 px-3 py-1.5 text-canvas/70">⚡ INSTANT</span>
+                    <span class="border-2 border-canvas/40 px-3 py-1.5 text-canvas/70">🔒 NO SIGN-UP</span>
+                    <span class="border-2 border-canvas/40 px-3 py-1.5 text-canvas/70">👤 REAL HUMAN REPLIES</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t-4 border-ink bg-ink text-canvas p-6 md:p-10 flex flex-col md:flex-row justify-between items-center font-mono text-xs font-bold uppercase gap-6">
+            <div>END OF DOCUMENT // ILHAM_MORSALIN.SYS</div>
+            <div class="flex gap-6"><span>LAT: 22.3569° N</span><span>LON: 91.7832° E</span></div>
+            <div>© 2026 // ALL RIGHTS RESERVED</div>
+        </footer>
+
+    </main>
+
+    <!-- ============================================ -->
+    <!-- FULL-SCREEN CHAT TAKEOVER                     -->
+    <!-- ============================================ -->
+    <div id="chatTakeover" class="fixed inset-0 z-[200] items-center justify-center p-3 md:p-6" style="background:rgba(0,0,0,.88);">
+        <div class="w-full max-w-lg border-4 border-canvas bg-canvas shadow-brutal-lg flex flex-col overflow-hidden" style="max-height:85vh;">
+            
+            <!-- Chat Header -->
+            <div class="flex items-center justify-between bg-ink text-canvas px-4 py-3 border-b-4 border-canvas">
+                <div class="flex items-center gap-3">
+                    <!-- Avatar -->
+                    <div class="relative w-12 h-12 bg-accent border-2 border-canvas flex items-center justify-center font-black text-ink text-lg">
+                        IM
+                        <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 border-2 border-ink"></span>
+                    </div>
+                    <div>
+                        <div class="font-black uppercase text-base leading-none">Ilham Morsalin</div>
+                        <div class="font-mono text-[10px] text-accent mt-0.5 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 bg-accent animate-blink"></span>
+                            <span id="chatStatus">Usually replies within a day</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <!-- Hidden admin toggle -->
+                    <button onclick="toggleAdmin()" title="·" class="w-3 h-3 bg-transparent hover:bg-accent opacity-20 hover:opacity-100"></button>
+                    <button onclick="closeChat()" class="w-9 h-9 border-2 border-canvas hover:bg-accent hover:text-ink hover:border-accent font-black text-xl leading-none flex items-center justify-center">×</button>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div id="chatMessages" class="chat-scroll flex-1 overflow-y-auto p-4 space-y-4 bg-canvas min-h-[260px]">
+                <!-- JS injects messages here -->
+            </div>
+
+            <!-- Input / Locked state -->
+            <div id="chatInputArea" class="border-t-4 border-ink bg-canvas p-3">
+                <div class="flex gap-2">
+                    <input id="chatInput" type="text" maxlength="280" autocomplete="off" placeholder="Type your message…"
+                        class="flex-1 border-3 border-ink bg-white px-4 py-3 font-mono text-sm focus:outline-none focus:border-accent placeholder:text-secondary"
+                        onkeydown="if(event.key==='Enter') sendMessage()">
+                    <button onclick="sendMessage()" id="sendBtn" class="bg-ink text-canvas px-5 font-black uppercase text-sm hover:bg-accent hover:text-ink flex items-center gap-2">
+                        SEND <span class="text-accent group-hover:text-ink">➤</span>
+                    </button>
+                </div>
+                <div class="mt-2 font-mono text-[10px] text-secondary text-center">🔒 private · delivered straight to Ilham</div>
+            </div>
+
+            <!-- Rate-limited state (hidden by default) -->
+            <div id="chatLocked" class="hidden border-t-4 border-ink bg-accent p-5 text-center">
+                <div class="font-black uppercase text-lg text-ink mb-1">✓ Message delivered!</div>
+                <p class="font-mono text-xs text-ink/90 mb-4">Ilham will get back to you ASAP. Want a faster reply?</p>
+                <a id="waLink" href="#" target="_blank" class="inline-block border-3 border-ink bg-ink text-canvas px-6 py-3 font-black uppercase text-sm hover:bg-canvas hover:text-ink">
+                    Continue on WhatsApp ↗
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    /* =========================================================================
+       CONFIG — FIREBASE SETUP (the "simple online hosted database")
+       -------------------------------------------------------------------------
+       1. Go to https://console.firebase.google.com → Create project
+       2. Build → Realtime Database → Create database → Start in TEST mode
+       3. Project settings → Your apps → Web app → copy config
+       4. Paste it below, replacing the placeholders.
+       Until then, the chat runs in DEMO MODE (messages show locally only).
+    ========================================================================= */
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+        projectId: "YOUR_PROJECT",
+        storageBucket: "YOUR_PROJECT.appspot.com",
+        messagingSenderId: "XXXX",
+        appId: "XXXX"
+    };
+
+    const USE_FIREBASE = firebaseConfig.apiKey !== "YOUR_API_KEY";
+    let db = null;
+    if (USE_FIREBASE) {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.database();
+    }
+
+    const WHATSAPP_NUMBER = "8801303454384"; // Ilham's number (880 + 01303454384)
+    </script>
+
+    <script>
+    /* ================= CURSOR ================= */
+    const cursor = document.getElementById('cursor');
+    let mouseX=0,mouseY=0,cursorX=0,cursorY=0;
+    document.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
+    (function animateCursor(){cursorX+=(mouseX-cursorX)*.15;cursorY+=(mouseY-cursorY)*.15;const r=cursor.getBoundingClientRect();cursor.style.left=cursorX-(r.width/2)+'px';cursor.style.top=cursorY-(r.height/2)+'px';requestAnimationFrame(animateCursor);})();
+    document.querySelectorAll('a,button,.skill-item,article').forEach(el=>{el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));});
+
+    /* ================= PROGRESS + NAV ================= */
+    const progressBar=document.getElementById('progressBar');
+    window.addEventListener('scroll',()=>{const h=document.documentElement;progressBar.style.width=(window.scrollY/(h.scrollHeight-window.innerHeight))*100+'%';});
+    const sections=document.querySelectorAll('#hero,#projects,#about,#connect');
+    const navLinks=document.querySelectorAll('.nav-link');
+    function updateActiveNav(){const pos=window.scrollY+150;sections.forEach(s=>{if(pos>=s.offsetTop&&pos<s.offsetTop+s.offsetHeight){navLinks.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+s.id);});}});}
+    window.addEventListener('scroll',updateActiveNav);updateActiveNav();
+
+    /* ================= REVEAL ================= */
+    const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('active');}),{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+    /* ================= SKILL FILTER ================= */
+    document.querySelectorAll('.filter-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');const f=b.dataset.filter;document.querySelectorAll('.skill-item').forEach(i=>{i.style.display=(f==='all'||i.dataset.category===f)?'block':'none';});});});
+
+    /* ================= MAGNETIC ================= */
+    document.querySelectorAll('.magnetic').forEach(el=>{el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect();el.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.15}px,${(e.clientY-r.top-r.height/2)*.15}px)`;});el.addEventListener('mouseleave',()=>el.style.transform='translate(0,0)');});
+
+    /* =========================================================================
+       CHAT LOGIC
+    ========================================================================= */
+    // Unique thread per visitor (so Ilham can tell conversations apart)
+    let threadId = localStorage.getItem('ilham_thread');
+    if (!threadId) { threadId = 't_' + Math.random().toString(36).substr(2,9); localStorage.setItem('ilham_thread', threadId); }
+    const SENT_FLAG = 'ilham_sent_' + threadId;
+    let hasSent = localStorage.getItem(SENT_FLAG) === '1';
+    let adminMode = false;
+    let lastVisitorMsg = '';
+
+    const messagesEl = document.getElementById('chatMessages');
+    const inputEl = document.getElementById('chatInput');
+
+    function timeNow(){ return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+
+    function addMessage(from, text, ts){
+        const isIlham = from === 'ilham';
+        const isSystem = from === 'system';
+        const wrap = document.createElement('div');
+        wrap.className = 'msg-in flex ' + (isSystem ? 'justify-center' : (isIlham ? 'justify-start' : 'justify-end'));
+
+        if (isSystem){
+            wrap.innerHTML = `<div class="font-mono text-[10px] uppercase bg-ink text-canvas px-3 py-1.5 border-2 border-accent">${text}</div>`;
+        } else {
+            const avatar = isIlham ? `<div class="w-8 h-8 bg-accent border-2 border-ink flex items-center justify-center font-black text-ink text-xs mr-2 flex-shrink-0">IM</div>` : '';
+            const bubbleColor = isIlham ? 'bg-white border-ink text-ink' : 'bg-accent border-ink text-ink';
+            const align = isIlham ? 'items-start' : 'items-end';
+            wrap.innerHTML = `
+                <div class="flex ${align} max-w-[80%] ${isIlham?'':'flex-row-reverse'}">
+                    ${avatar}
+                    <div>
+                        <div class="border-3 ${bubbleColor} px-4 py-3 font-mono text-sm leading-snug break-words">${escapeHtml(text)}</div>
+                        <div class="font-mono text-[9px] text-secondary mt-1 ${isIlham?'':'text-right'}">${ts} · ${isIlham?'Ilham':'You'}</div>
+                    </div>
+                </div>`;
+        }
+        messagesEl.appendChild(wrap);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+    function showTyping(){
+        const t=document.createElement('div');
+        t.id='typingIndicator';
+        t.className='msg-in flex justify-start';
+        t.innerHTML=`<div class="w-8 h-8 bg-accent border-2 border-ink flex items-center justify-center font-black text-ink text-xs mr-2">IM</div>
+            <div class="border-3 bg-white border-ink px-4 py-3 flex items-center gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+        messagesEl.appendChild(t);
+        messagesEl.scrollTop=messagesEl.scrollHeight;
+    }
+    function hideTyping(){ const t=document.getElementById('typingIndicator'); if(t)t.remove(); }
+
+    /* ---- Open / Close ---- */
+    function openChat(){
+        document.getElementById('chatTakeover').classList.add('open');
+        document.body.style.overflow='hidden';
+        messagesEl.innerHTML='';
+
+        // Welcome sequence
+        addMessage('system','PRIVATE CHANNEL · CONNECTED');
+        showTyping();
+        setTimeout(()=>{ hideTyping();
+            addMessage('ilham',"Hey! 👋 I'm Ilham. Thanks for stopping by.");
+            setTimeout(()=>{ addMessage('ilham',"Drop a message below — I read everything and will get back to you when I see it. No rush, no spam. 🚀"); }, 500);
+        }, 700);
+
+        if (hasSent) lockChat(lastVisitorMsg || 'your message');
+
+        // Live-listen for Ilham's replies (Firebase)
+        if (USE_FIREBASE){
+            db.ref('conversations/'+threadId+'/messages').orderByChild('ts').on('child_added', snap=>{
+                const m=snap.val();
+                if (m.from==='ilham') addMessage('ilham', m.text, new Date(m.ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}));
+            });
+        }
+    }
+    function closeChat(){
+        document.getElementById('chatTakeover').classList.remove('open');
+        document.body.style.overflow='';
+        if(USE_FIREBASE && db) db.ref('conversations/'+threadId+'/messages').off();
+    }
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeChat(); });
+
+    /* ---- Send (rate-limited to 1) ---- */
+    function sendMessage(){
+        if (adminMode){ sendAsIlham(); return; }
+        if (hasSent) return;
+        const text = inputEl.value.trim();
+        if (!text){ inputEl.classList.add('border-accent'); setTimeout(()=>inputEl.classList.remove('border-accent'),300); return; }
+
+        lastVisitorMsg = text;
+        addMessage('visitor', text, timeNow());
+        inputEl.value='';
+
+        // Persist to Firebase
+        if (USE_FIREBASE){
+            db.ref('conversations/'+threadId+'/messages').push({ from:'visitor', text, ts: firebase.database.ServerValue.TIMESTAMP });
+            db.ref('conversations/'+threadId+'/meta').set({ lastActivity: firebase.database.ServerValue.TIMESTAMP, preview: text });
+        }
+
+        // Rate limit: lock after 1 message
+        hasSent = true;
+        localStorage.setItem(SENT_FLAG,'1');
+        lockChat(text);
+    }
+
+    function lockChat(text){
+        document.getElementById('chatInputArea').classList.add('hidden');
+        const locked=document.getElementById('chatLocked');
+        locked.classList.remove('hidden');
+        document.getElementById('waLink').href = 'https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent('Hey Ilham! '+text+' (via your portfolio chat)');
+
+        // Ilham "sees" it and acks
+        setTimeout(()=>{ showTyping(); setTimeout(()=>{ hideTyping(); addMessage('ilham',"Got it! ✅ I'll get back to you ASAP. If it's urgent, the WhatsApp button below reaches me fastest."); }, 800); }, 600);
+    }
+
+    /* ---- Hidden Admin mode (Ilham replies in-chat for demo) ----
+       Toggle: press Ctrl+Shift+A  OR click the tiny dot in the header. */
+    function toggleAdmin(){
+        adminMode = !adminMode;
+        document.getElementById('chatStatus').textContent = adminMode ? '⚙ ADMIN MODE — you are Ilham' : 'Usually replies within a day';
+        inputEl.placeholder = adminMode ? 'Reply as Ilham…' : 'Type your message…';
+        if (adminMode){ document.getElementById('chatInputArea').classList.remove('hidden'); document.getElementById('chatLocked').classList.add('hidden'); }
+    }
+    document.addEventListener('keydown',e=>{ if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='a') toggleAdmin(); });
+
+    function sendAsIlham(){
+        const text=inputEl.value.trim();
+        if(!text)return;
+        addMessage('ilham',text,timeNow());
+        inputEl.value='';
+        if(USE_FIREBASE) db.ref('conversations/'+threadId+'/messages').push({ from:'ilham', text, ts: firebase.database.ServerValue.TIMESTAMP });
+    }
+    </script>
+
+</body>
+</html>

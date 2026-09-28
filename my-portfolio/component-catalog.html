@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Architecture & Component Catalog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-purple-500 selection:text-white pb-24">
+
+  <!-- Sticky Top Navigation -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-purple-500/20">
+          IP
+        </div>
+        <div>
+          <span class="font-bold text-base text-white tracking-tight">Ilham's Portfolio</span>
+          <span class="text-xs text-slate-400 block -mt-1 font-mono">Component & Section Anatomy</span>
+        </div>
+      </div>
+      
+      <!-- Nav Tabs -->
+      <nav class="flex items-center gap-1 sm:gap-2">
+        <button onclick="switchTab('overview')" id="tab-overview-btn" class="nav-tab px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg transition-colors bg-purple-600/20 text-purple-300 border border-purple-500/30">
+          The Story
+        </button>
+        <button onclick="switchTab('components')" id="tab-components-btn" class="nav-tab px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg transition-colors text-slate-400 hover:text-slate-200 hover:bg-slate-900 border border-transparent">
+          Components (3)
+        </button>
+        <button onclick="switchTab('sections')" id="tab-sections-btn" class="nav-tab px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg transition-colors text-slate-400 hover:text-slate-200 hover:bg-slate-900 border border-transparent">
+          Sections (4)
+        </button>
+        <button onclick="switchTab('assembly')" id="tab-assembly-btn" class="nav-tab px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg transition-colors text-slate-400 hover:text-slate-200 hover:bg-slate-900 border border-transparent flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Full Assembly
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: THE STORY & ARCHITECTURAL SUMMARY   -->
+    <!-- ========================================== -->
+    <div id="tab-overview" class="tab-content space-y-8">
+      <!-- Hero Banner -->
+      <div class="relative overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900/90 to-purple-950/40 p-6 sm:p-10 shadow-2xl">
+        <div class="max-w-3xl space-y-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-semibold">
+            <span>Repository Archaeology & Code Explainer</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            Why do all these component and section files exist?
+          </h1>
+          <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+            If you've opened your project recently and wondered <em>"What are all these files, and why did I make them?"</em>, here is the exact chronological story uncovered from your git history.
+          </p>
+        </div>
+      </div>
+
+      <!-- Timeline cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <!-- Step 1 -->
+        <div class="p-5 rounded-xl border border-slate-800 bg-slate-900/60 space-y-2">
+          <div class="text-xs font-mono text-purple-400 font-semibold flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-purple-400"></span> Phase 1: Scaffold
+          </div>
+          <h3 class="text-white font-semibold text-sm">Initial AI Scaffold</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            The project was initially created with react-router-dom, a navbar <code class="text-purple-300">Header</code>, a <code class="text-purple-300">Footer</code>, and 4 sections (<code class="text-slate-300">Home</code>, <code class="text-slate-300">About</code>, <code class="text-slate-300">Projects</code>, <code class="text-slate-300">Contact</code>).
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="p-5 rounded-xl border border-slate-800 bg-slate-900/60 space-y-2">
+          <div class="text-xs font-mono text-amber-400 font-semibold flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span> Phase 2: Fresh Start
+          </div>
+          <h3 class="text-white font-semibold text-sm">Resetting AI Code</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            In commit <code class="text-amber-300 font-mono text-[11px]">bd575d0</code> (<em>"removed all the ai stuff and starting fresh"</em>), Header and Footer were emptied into dummy functions, while sections were left behind untouched.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="p-5 rounded-xl border border-slate-800 bg-slate-900/60 space-y-2">
+          <div class="text-xs font-mono text-blue-400 font-semibold flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-blue-400"></span> Phase 3: Tailwind Practice
+          </div>
+          <h3 class="text-white font-semibold text-sm">Card Component Trial</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            In commit <code class="text-blue-300 font-mono text-[11px]">385c498</code>, you built <code class="text-purple-300">Card.jsx</code> to practice Tailwind styling, displaying profile badges with your assets (<code class="text-slate-300">elamDP</code>, <code class="text-slate-300">sun</code>, <code class="text-slate-300">pulp</code>).
+          </p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="p-5 rounded-xl border border-emerald-500/30 bg-emerald-950/10 space-y-2">
+          <div class="text-xs font-mono text-emerald-400 font-semibold flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Phase 4: Current State
+          </div>
+          <h3 class="text-white font-semibold text-sm">Ready to Reconnect</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            <code class="text-emerald-300">App.jsx</code> currently has an empty green container. All your modular sections and cards are ready to be wired back together into a finished portfolio.
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Summary Table -->
+      <div class="rounded-xl border border-slate-800 overflow-hidden bg-slate-900/40">
+        <div class="px-6 py-4 border-b border-slate-800 bg-slate-900/80 flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-white">Files Inventory</h3>
+          <span class="text-xs text-slate-400 font-mono">7 files analyzed in src/</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-900/90 text-slate-400 font-mono text-xs uppercase border-b border-slate-800">
+              <tr>
+                <th class="py-3 px-6">File Path</th>
+                <th class="py-3 px-6">Type</th>
+                <th class="py-3 px-6">Status</th>
+                <th class="py-3 px-6">What It Actually Does</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60 font-normal text-slate-300">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="py-3.5 px-6 font-mono font-medium text-purple-300">src/components/Card.jsx</td>
+                <td class="py-3.5 px-6 text-slate-400">Component</td>
+                <td class="py-3.5 px-6"><span class="px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs">Functional UI</span></td>
+                <td class="py-3.5 px-6">Reusable avatar card with title, description, and interactive action button.</td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="py-3.5 px-6 font-mono font-medium text-purple-300">src/components/Header.jsx</td>
+                <td class="py-3.5 px-6 text-slate-400">Component</td>
+                <td class="py-3.5 px-6"><span class="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs">Empty Stub</span></td>
+                <td class="py-3.5 px-6">Contains an empty function (<code class="text-slate-400">function Header() {}</code>) left over from reset.</td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="py-3.5 px-6 font-mono font-medium text-purple-300">src/components/Footer.jsx</td>
+                <td class="py-3.5 px-6 text-slate-400">Component</td>
+                <td class="py-3.5 px-6"><span class="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs">Empty Stub</span></td>
+                <td class="py-3.5 px-6">Contains an empty function (<code class="text-slate-400">function Footer() {}</code>) left over from reset.</td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="py-3.5 px-6 font-mono font-medium text-indigo-300">src/sections/HomeSection.jsx</td>
+                <td class="py-3.5 px-6 text-slate-400">Section</td>
+                <td class="py-3.5 px-6"><span class="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs">Ready / Orphaned</span></td>
+                <td class="py-3.5 px-6">Welcome hero introducing Ilham and his portfolio site.</td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="py-3.5 px-6 font-mono font-medium text-indigo-300">src/sections/AboutSection.jsx</td>
+                <td class="py-3.5 px-6 text-slate-400">Section</td>
+                <td class="py-3.5 px-6"><span class="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs">Ready / Orphaned</span></td>
+                <td class="py-3.5 px-6">Short bio about studying CSE at BRAC University, games, and problem solving.</td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="py-3.5 px-6 font-mono font-medium text-indigo-300">src/sections/ProjectsSection.jsx</td>
+                <td class="py-3.5 px-6 text-slate-400">Section</td>
+                <td class="py-3.5 px-6"><span class="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs">Ready / Orphaned</span></td>
+                <td class="py-3.5 px-6">Bullet list showcasing "2D Cyberpunk Platformer game" and "Portfolio Website".</td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="py-3.5 px-6 font-mono font-medium text-indigo-300">src/sections/ContactSection.jsx</td>
+                <td class="py-3.5 px-6 text-slate-400">Section</td>
+                <td class="py-3.5 px-6"><span class="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs">Ready / Orphaned</span></td>
+                <td class="py-3.5 px-6">Contact segment with email <code class="text-indigo-300">ilhammorsalin@gmail.com</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: COMPONENTS (Card, Header, Footer)   -->
+    <!-- ========================================== -->
+    <div id="tab-components" class="tab-content hidden space-y-12">
+      
+      <!-- Component 1: Card.jsx -->
+      <section class="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden shadow-xl">
+        <div class="px-6 py-4 bg-slate-900/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="px-2.5 py-1 text-xs font-mono font-bold rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
+              src/components/Card.jsx
+            </span>
+            <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400">
+              Active UI Component
+            </span>
+          </div>
+          <span class="text-xs text-slate-400 font-mono">Props: image, header, text, btnText</span>
+        </div>
+
+        <div class="p-6 sm:p-8 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Explanation -->
+            <div class="space-y-4">
+              <h3 class="text-lg font-bold text-white">What it does &amp; Why you built it</h3>
+              <p class="text-slate-300 text-sm leading-relaxed">
+                This is a fully styled profile / item card. You built it in commit <code class="text-purple-300 font-mono">385c498</code> to experiment with Tailwind CSS features like rounded avatars, drop shadows, responsive flexbox layout, and custom interactive button states (<code class="text-purple-300">focus:ring-2</code>, <code class="text-purple-300">active:bg-purple-950</code>).
+              </p>
+              <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2 text-xs">
+                <div class="text-slate-400 font-semibold uppercase tracking-wider text-[11px]">Key Technical Highlights:</div>
+                <ul class="list-disc pl-5 space-y-1 text-slate-300">
+                  <li>Special dynamic border styling: <code class="text-amber-400">first:border-amber-500</code> and <code class="text-blue-400">last:border-blue-300</code> when placed in lists.</li>
+                  <li>Circular avatar with colored border (<code class="text-purple-400">border-purple-500 bg-yellow-300</code>).</li>
+                  <li>Interactive button with smooth hover transitions.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Code block -->
+            <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+              <div class="px-4 py-2 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+                <span>Card.jsx Source</span>
+                <span>29 lines</span>
+              </div>
+              <pre class="p-4 text-xs text-slate-300 overflow-x-auto leading-relaxed"><code>export function Card({ image, header, text, btnText }) {
+  return (
+    &lt;div className="m-5 border-8 border-amber-50 first:border-amber-500 
+      last:border-blue-300 p-4 gap-x-2 bg-white rounded-xl shadow-lg 
+      shadow-black flex-shrink-0 flex items-center h-auto w-auto"&gt;
+      &lt;img
+        className="border-4 border-purple-500 bg-yellow-300 rounded-full w-20 h-20"
+        src={image}
+        alt=""
+      /&gt;
+      &lt;div&gt;
+        &lt;div className="pl-2 -mb-1 text-xl font-medium text-black"&gt;
+          {header}
+        &lt;/div&gt;
+        &lt;p className="pl-2 text-gray-500"&gt;{text}&lt;/p&gt;
+        &lt;button className="px-3 pb-1 mx-2 mt-1 text-sm text-purple-600 
+          font-semibold rounded-full border border-purple-200 
+          hover:text-white hover:bg-purple-600 hover:border-transparent 
+          focus:ring-2 focus:ring-purple-950 focus:ring-offset-2 
+          active:bg-purple-950"&gt;
+          {btnText}
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+            </div>
+          </div>
+
+          <!-- Live Rendered Preview -->
+          <div class="pt-6 border-t border-slate-800">
+            <div class="mb-4 flex items-center justify-between">
+              <h4 class="text-sm font-semibold uppercase tracking-wider text-slate-400 font-mono">
+                Live Render Preview (Recreating your original test cards from App.jsx)
+              </h4>
+              <span class="text-xs text-slate-500">Rendered with your local project assets</span>
+            </div>
+            
+            <!-- Exact reproduction of App.jsx background container -->
+            <div class="rounded-xl p-6 bg-slate-800/90 border border-slate-700 flex flex-wrap justify-center gap-6 items-center">
+              
+              <!-- Card Instance 1: elam -->
+              <div class="border-8 border-amber-50 p-4 gap-x-3 bg-white rounded-xl shadow-lg shadow-black flex items-center w-80">
+                <img class="border-4 border-purple-500 bg-yellow-300 rounded-full w-20 h-20 object-cover flex-shrink-0" src="src/assets/elamDP.png" alt="elam" onerror="this.src='public/elamDP.png'">
+                <div class="min-w-0">
+                  <div class="pl-2 -mb-1 text-xl font-medium text-black truncate">elam</div>
+                  <p class="pl-2 text-gray-500 text-sm truncate">lazy ass dude</p>
+                  <button class="px-3 pb-1 mx-2 mt-2 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:ring-2 focus:ring-purple-950 focus:ring-offset-2 active:bg-purple-950 transition-all">
+                    Text
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card Instance 2: naturelover55 -->
+              <div class="border-8 border-amber-50 p-4 gap-x-3 bg-white rounded-xl shadow-lg shadow-black flex items-center w-80">
+                <img class="border-4 border-purple-500 bg-yellow-300 rounded-full w-20 h-20 object-cover flex-shrink-0" src="src/assets/sun scarecrow square.png" alt="naturelover55">
+                <div class="min-w-0">
+                  <div class="pl-2 -mb-1 text-xl font-medium text-black truncate">naturelover55</div>
+                  <p class="pl-2 text-gray-500 text-sm truncate">watch a sunset with me</p>
+                  <button class="px-3 pb-1 mx-2 mt-2 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:ring-2 focus:ring-purple-950 focus:ring-offset-2 active:bg-purple-950 transition-all">
+                    Text
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card Instance 3: s.jackson -->
+              <div class="border-8 border-amber-50 p-4 gap-x-3 bg-white rounded-xl shadow-lg shadow-black flex items-center w-80">
+                <img class="border-4 border-purple-500 bg-yellow-300 rounded-full w-20 h-20 object-cover flex-shrink-0" src="src/assets/pulp gif.gif" alt="s.jackson">
+                <div class="min-w-0">
+                  <div class="pl-2 -mb-1 text-xl font-medium text-black truncate">s.jackson</div>
+                  <p class="pl-2 text-gray-500 text-sm truncate">that mf</p>
+                  <button class="px-3 pb-1 mx-2 mt-2 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:ring-2 focus:ring-purple-950 focus:ring-offset-2 active:bg-purple-950 transition-all">
+                    Text
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Component 2: Header.jsx -->
+      <section class="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden shadow-xl">
+        <div class="px-6 py-4 bg-slate-900/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="px-2.5 py-1 text-xs font-mono font-bold rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
+              src/components/Header.jsx
+            </span>
+            <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400">
+              Empty Stub File
+            </span>
+          </div>
+        </div>
+
+        <div class="p-6 sm:p-8 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <h3 class="text-lg font-bold text-white">What it does &amp; Why it is empty</h3>
+              <p class="text-slate-300 text-sm leading-relaxed">
+                Currently, this file does literally nothing: it exports an empty function with no return statement.
+              </p>
+              <p class="text-slate-400 text-sm leading-relaxed">
+                <strong>Why you built it:</strong> Originally, in commits <code class="text-purple-300 font-mono">a6086b5</code> and <code class="text-purple-300 font-mono">3b11091</code>, this was a complete navigation bar with links to your 4 sections (<code class="text-slate-300">#home</code>, <code class="text-slate-300">#about</code>, <code class="text-slate-300">#projects</code>, <code class="text-slate-300">#contact</code>). When you wanted a clean slate in commit <code class="text-amber-300 font-mono">bd575d0</code>, you wiped the JSX contents to start fresh.
+              </p>
+            </div>
+
+            <!-- Code block -->
+            <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+              <div class="px-4 py-2 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+                <span>Header.jsx Current Source</span>
+                <span>6 lines</span>
+              </div>
+              <pre class="p-4 text-xs text-slate-300 overflow-x-auto"><code>function Header() {
+  
+}
+
+export default Header;</code></pre>
+            </div>
+          </div>
+
+          <!-- Suggested Restoration Preview -->
+          <div class="pt-6 border-t border-slate-800">
+            <h4 class="text-sm font-semibold uppercase tracking-wider text-slate-400 font-mono mb-3">
+              What it was meant to look like (Restoration Mockup)
+            </h4>
+            <div class="rounded-xl bg-white border border-slate-200 p-4 text-slate-800 flex items-center justify-between shadow-sm">
+              <div class="font-bold text-lg text-slate-900">Ilham Morsalin</div>
+              <div class="flex gap-6 text-sm font-medium text-slate-600">
+                <span class="hover:text-purple-600 cursor-pointer">Home</span>
+                <span class="hover:text-purple-600 cursor-pointer">About</span>
+                <span class="hover:text-purple-600 cursor-pointer">Projects</span>
+                <span class="hover:text-purple-600 cursor-pointer">Contact</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Component 3: Footer.jsx -->
+      <section class="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden shadow-xl">
+        <div class="px-6 py-4 bg-slate-900/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="px-2.5 py-1 text-xs font-mono font-bold rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
+              src/components/Footer.jsx
+            </span>
+            <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400">
+              Empty Stub File
+            </span>
+          </div>
+        </div>
+
+        <div class="p-6 sm:p-8 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <h3 class="text-lg font-bold text-white">What it does &amp; Current State</h3>
+              <p class="text-slate-300 text-sm leading-relaxed">
+                Like <code class="text-purple-300">Header.jsx</code>, <code class="text-purple-300">Footer.jsx</code> was emptied during the commit <code class="text-amber-300 font-mono">bd575d0</code> reset. It awaits your custom footer design (social links, copyright, or resume download).
+              </p>
+            </div>
+
+            <!-- Code block -->
+            <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+              <div class="px-4 py-2 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+                <span>Footer.jsx Current Source</span>
+                <span>6 lines</span>
+              </div>
+              <pre class="p-4 text-xs text-slate-300 overflow-x-auto"><code>function Footer() {
+  
+}
+
+export default Footer;</code></pre>
+            </div>
+          </div>
+
+          <!-- Suggested Restoration Preview -->
+          <div class="pt-6 border-t border-slate-800">
+            <h4 class="text-sm font-semibold uppercase tracking-wider text-slate-400 font-mono mb-3">
+              Suggested Footer Mockup
+            </h4>
+            <div class="rounded-xl bg-slate-900 border border-slate-800 p-6 text-center text-xs text-slate-400">
+              <p>© 2026 Ilham Morsalin • BRAC University CSE • Built with React &amp; Tailwind CSS</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: SECTIONS (Home, About, Projects, Contact) -->
+    <!-- ========================================== -->
+    <div id="tab-sections" class="tab-content hidden space-y-8">
+      
+      <div class="p-5 rounded-xl border border-emerald-500/20 bg-emerald-950/20 flex items-start gap-4">
+        <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold flex-shrink-0">
+          ✓
+        </div>
+        <div class="space-y-1">
+          <h3 class="text-white font-semibold text-sm">All 4 section files contain valid, ready-to-use content</h3>
+          <p class="text-slate-300 text-xs leading-relaxed">
+            These sections were written during your initial portfolio design in <code class="text-emerald-300">src/sections/</code>. They are completely intact and only need to be imported into <code class="text-emerald-300">App.jsx</code>!
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- 1. HomeSection.jsx -->
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden shadow-xl flex flex-col justify-between">
+          <div class="p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 text-xs font-mono font-bold rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                src/sections/HomeSection.jsx
+              </span>
+              <span class="text-xs text-slate-500 font-mono">id="home"</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Hero / Welcome Section</h3>
+            <p class="text-slate-400 text-xs">
+              Introduces visitors to your portfolio with a clean heading and short greeting.
+            </p>
+            
+            <!-- Render Preview -->
+            <div class="rounded-xl bg-white p-5 border border-slate-200 text-slate-900">
+              <div class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-2">Live Render Preview:</div>
+              <section id="home">
+                <h2 class="text-xl font-semibold mb-2 text-slate-900">Welcome!</h2>
+                <p class="text-gray-700 text-sm">Hi, I'm Ilham. Welcome to my portfolio website.</p>
+              </section>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-800 bg-slate-950 p-4">
+            <pre class="text-xs text-slate-400 font-mono overflow-x-auto"><code>function HomeSection() {
+  return (
+    &lt;section id="home" className="mb-16"&gt;
+      &lt;h2 className="text-xl font-semibold mb-2"&gt;Welcome!&lt;/h2&gt;
+      &lt;p className="text-gray-700"&gt;Hi, I'm Ilham. Welcome to my portfolio website.&lt;/p&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+          </div>
+        </div>
+
+        <!-- 2. AboutSection.jsx -->
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden shadow-xl flex flex-col justify-between">
+          <div class="p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 text-xs font-mono font-bold rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                src/sections/AboutSection.jsx
+              </span>
+              <span class="text-xs text-slate-500 font-mono">id="about"</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Bio / About Section</h3>
+            <p class="text-slate-400 text-xs">
+              Summarizes your background as a CSE undergrad student at BRAC University.
+            </p>
+            
+            <!-- Render Preview -->
+            <div class="rounded-xl bg-white p-5 border border-slate-200 text-slate-900">
+              <div class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-2">Live Render Preview:</div>
+              <section id="about">
+                <h2 class="text-xl font-semibold mb-2 text-slate-900">About Me</h2>
+                <p class="text-gray-700 text-sm leading-relaxed">
+                  I'm a undergrad student studying Computer Science and Engineering at BRAC University. I love games and graphic design. I also love solving software and coding related problems.
+                </p>
+              </section>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-800 bg-slate-950 p-4">
+            <pre class="text-xs text-slate-400 font-mono overflow-x-auto"><code>function AboutSection() {
+  return (
+    &lt;section id="about" className="mb-16"&gt;
+      &lt;h2 className="text-xl font-semibold mb-2"&gt;About Me&lt;/h2&gt;
+      &lt;p className="text-gray-700"&gt;I'm a undergrad student studying...&lt;/p&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+          </div>
+        </div>
+
+        <!-- 3. ProjectsSection.jsx -->
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden shadow-xl flex flex-col justify-between">
+          <div class="p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 text-xs font-mono font-bold rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                src/sections/ProjectsSection.jsx
+              </span>
+              <span class="text-xs text-slate-500 font-mono">id="projects"</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Projects Listing Section</h3>
+            <p class="text-slate-400 text-xs">
+              Bullet point list of featured works (Platformer game &amp; Portfolio).
+            </p>
+            
+            <!-- Render Preview -->
+            <div class="rounded-xl bg-white p-5 border border-slate-200 text-slate-900">
+              <div class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-2">Live Render Preview:</div>
+              <section id="projects">
+                <h2 class="text-xl font-semibold mb-2 text-slate-900">Projects</h2>
+                <ul class="list-disc pl-6 text-gray-700 text-sm space-y-1">
+                  <li>Project 1 - 2D Cyberpunk Platformer game</li>
+                  <li>Project 2 - Portfolio Website</li>
+                </ul>
+              </section>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-800 bg-slate-950 p-4">
+            <pre class="text-xs text-slate-400 font-mono overflow-x-auto"><code>function ProjectsSection() {
+  return (
+    &lt;section id="projects" className="mb-16"&gt;
+      &lt;h2 className="text-xl font-semibold mb-2"&gt;Projects&lt;/h2&gt;
+      &lt;ul className="list-disc pl-6 text-gray-700"&gt;
+        &lt;li&gt;Project 1 - 2D Cyberpunk Platformer game&lt;/li&gt;
+        &lt;li&gt;Project 2 - Portfolio Website&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+          </div>
+        </div>
+
+        <!-- 4. ContactSection.jsx -->
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden shadow-xl flex flex-col justify-between">
+          <div class="p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 text-xs font-mono font-bold rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                src/sections/ContactSection.jsx
+              </span>
+              <span class="text-xs text-slate-500 font-mono">id="contact"</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Contact Info Section</h3>
+            <p class="text-slate-400 text-xs">
+              Provides direct email contact info for visitors and recruiters.
+            </p>
+            
+            <!-- Render Preview -->
+            <div class="rounded-xl bg-white p-5 border border-slate-200 text-slate-900">
+              <div class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-2">Live Render Preview:</div>
+              <section id="contact">
+                <h2 class="text-xl font-semibold mb-2 text-slate-900">Contact</h2>
+                <p class="text-gray-700 text-sm">Email: <span class="text-purple-600 font-medium">ilhammorsalin@gmail.com</span></p>
+              </section>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-800 bg-slate-950 p-4">
+            <pre class="text-xs text-slate-400 font-mono overflow-x-auto"><code>function ContactSection() {
+  return (
+    &lt;section id="contact"&gt;
+      &lt;h2 className="text-xl font-semibold mb-2"&gt;Contact&lt;/h2&gt;
+      &lt;p className="text-gray-700"&gt;Email: ilhammorsalin@gmail.com&lt;/p&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: FULL PAGE ASSEMBLY PREVIEW          -->
+    <!-- ========================================== -->
+    <div id="tab-assembly" class="tab-content hidden space-y-8">
+      
+      <div class="p-6 rounded-2xl border border-slate-800 bg-gradient-to-r from-purple-950/40 via-slate-900 to-indigo-950/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white">Full Page Assembly</h2>
+          <p class="text-slate-300 text-sm mt-1 max-w-2xl">
+            This is what your website looks like when all 4 sections (<code class="text-purple-300">Home</code>, <code class="text-purple-300">About</code>, <code class="text-purple-300">Projects</code>, <code class="text-purple-300">Contact</code>) and the <code class="text-purple-300">Card</code> components are united into a cohesive portfolio!
+          </p>
+        </div>
+      </div>
+
+      <!-- Live Mockup of Complete Assembled Portfolio -->
+      <div class="rounded-2xl border-2 border-slate-700 shadow-2xl overflow-hidden bg-white text-slate-900">
+        <!-- Mock Browser Bar -->
+        <div class="px-4 py-3 bg-slate-100 border-b border-slate-200 flex items-center gap-2">
+          <div class="flex gap-1.5">
+            <div class="w-3 h-3 rounded-full bg-red-400"></div>
+            <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+            <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+          </div>
+          <div class="mx-auto px-6 py-1 rounded-md bg-white border border-slate-200 text-xs text-slate-500 font-mono">
+            localhost:5173/ (Assembled Portfolio)
+          </div>
+        </div>
+
+        <!-- Navigation Header -->
+        <header class="border-b border-slate-200 px-8 py-5 flex items-center justify-between bg-white/90 backdrop-blur sticky top-0">
+          <div class="font-extrabold text-xl tracking-tight text-slate-900">Ilham Morsalin</div>
+          <nav class="flex gap-6 text-sm font-semibold text-slate-600">
+            <a href="#demo-home" class="hover:text-purple-600 transition-colors">Home</a>
+            <a href="#demo-about" class="hover:text-purple-600 transition-colors">About</a>
+            <a href="#demo-projects" class="hover:text-purple-600 transition-colors">Projects</a>
+            <a href="#demo-contact" class="hover:text-purple-600 transition-colors">Contact</a>
+          </nav>
+        </header>
+
+        <!-- Page Body Content -->
+        <div class="max-w-4xl mx-auto px-8 py-12 space-y-16">
+          
+          <!-- Home Section -->
+          <section id="demo-home" class="space-y-3">
+            <span class="text-xs font-mono text-purple-600 uppercase tracking-wider font-semibold">Intro</span>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Welcome!</h1>
+            <p class="text-lg text-slate-600 leading-relaxed">
+              Hi, I'm Ilham. Welcome to my portfolio website.
+            </p>
+          </section>
+
+          <!-- About Section -->
+          <section id="demo-about" class="space-y-3 pt-6 border-t border-slate-100">
+            <span class="text-xs font-mono text-purple-600 uppercase tracking-wider font-semibold">Background</span>
+            <h2 class="text-2xl font-bold text-slate-900">About Me</h2>
+            <p class="text-base text-slate-700 leading-relaxed max-w-3xl">
+              I'm an undergraduate student studying <strong>Computer Science and Engineering</strong> at <strong>BRAC University</strong>. I love games, interactive storytelling, and graphic design. I also love solving software and coding related problems.
+            </p>
+          </section>
+
+          <!-- Projects Section + Card Components Featured Showcase -->
+          <section id="demo-projects" class="space-y-6 pt-6 border-t border-slate-100">
+            <div>
+              <span class="text-xs font-mono text-purple-600 uppercase tracking-wider font-semibold">Portfolio</span>
+              <h2 class="text-2xl font-bold text-slate-900">Projects &amp; Creations</h2>
+              <p class="text-slate-600 text-sm mt-1">
+                Combining your projects list with the rich <code class="text-purple-600 font-mono">Card</code> component you crafted:
+              </p>
+            </div>
+
+            <!-- Integrated Card Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+              
+              <!-- Card 1 -->
+              <div class="border-4 border-amber-50 p-4 gap-x-3 bg-white rounded-xl shadow-md shadow-slate-200 flex items-center border border-slate-100 hover:shadow-lg transition-shadow">
+                <img class="border-4 border-purple-500 bg-yellow-300 rounded-full w-16 h-16 object-cover flex-shrink-0" src="src/assets/elamDP.png" alt="elam" onerror="this.src='public/elamDP.png'">
+                <div class="min-w-0">
+                  <div class="text-base font-bold text-slate-900 truncate">Nexus AI</div>
+                  <p class="text-slate-500 text-xs truncate">AI communication concierge</p>
+                  <button class="px-3 py-0.5 mt-2 text-xs text-purple-600 font-semibold rounded-full border border-purple-200 hover:bg-purple-600 hover:text-white transition-colors">
+                    Explore
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="border-4 border-amber-50 p-4 gap-x-3 bg-white rounded-xl shadow-md shadow-slate-200 flex items-center border border-slate-100 hover:shadow-lg transition-shadow">
+                <img class="border-4 border-purple-500 bg-yellow-300 rounded-full w-16 h-16 object-cover flex-shrink-0" src="src/assets/sun scarecrow square.png" alt="Bidroher Prohor">
+                <div class="min-w-0">
+                  <div class="text-base font-bold text-slate-900 truncate">2D Platformer</div>
+                  <p class="text-slate-500 text-xs truncate">Cyberpunk game in Godot</p>
+                  <button class="px-3 py-0.5 mt-2 text-xs text-purple-600 font-semibold rounded-full border border-purple-200 hover:bg-purple-600 hover:text-white transition-colors">
+                    Play
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="border-4 border-amber-50 p-4 gap-x-3 bg-white rounded-xl shadow-md shadow-slate-200 flex items-center border border-slate-100 hover:shadow-lg transition-shadow">
+                <img class="border-4 border-purple-500 bg-yellow-300 rounded-full w-16 h-16 object-cover flex-shrink-0" src="src/assets/pulp gif.gif" alt="Digital Fridge">
+                <div class="min-w-0">
+                  <div class="text-base font-bold text-slate-900 truncate">Digital Fridge</div>
+                  <p class="text-slate-500 text-xs truncate">Full-stack recipe generator</p>
+                  <button class="px-3 py-0.5 mt-2 text-xs text-purple-600 font-semibold rounded-full border border-purple-200 hover:bg-purple-600 hover:text-white transition-colors">
+                    View
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- Contact Section -->
+          <section id="demo-contact" class="space-y-3 pt-6 border-t border-slate-100">
+            <span class="text-xs font-mono text-purple-600 uppercase tracking-wider font-semibold">Get In Touch</span>
+            <h2 class="text-2xl font-bold text-slate-900">Contact</h2>
+            <p class="text-slate-700 text-sm">
+              Feel free to reach out via email: <a href="mailto:ilhammorsalin@gmail.com" class="text-purple-600 font-semibold underline underline-offset-4 hover:text-purple-700">ilhammorsalin@gmail.com</a>
+            </p>
+          </section>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-200 bg-slate-50 px-8 py-8 text-center text-xs text-slate-500">
+          <p>© 2026 Ilham Morsalin • BRAC University CSE • Built with React &amp; Tailwind CSS</p>
+        </footer>
+      </div>
+
+      <!-- App.jsx Integration Code Block -->
+      <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-white font-bold text-sm">How to update your App.jsx to connect everything:</h3>
+          <span class="text-xs font-mono text-emerald-400">Ready to copy</span>
+        </div>
+        <pre class="p-4 rounded-lg bg-slate-950 text-slate-300 text-xs font-mono overflow-x-auto leading-relaxed border border-slate-800"><code>import HomeSection from "./sections/HomeSection";
+import AboutSection from "./sections/AboutSection";
+import ProjectsSection from "./sections/ProjectsSection";
+import ContactSection from "./sections/ContactSection";
+import { Card } from "./components/Card";
+import elamDP from "./assets/elamDP.png";
+import sun from "./assets/sun scarecrow square.png";
+import pulp from "./assets/pulp gif.gif";
+
+function App() {
+  return (
+    &lt;div className="min-h-screen bg-slate-50 text-slate-900 p-8 max-w-4xl mx-auto space-y-12"&gt;
+      &lt;HomeSection /&gt;
+      &lt;AboutSection /&gt;
+      &lt;ProjectsSection /&gt;
+      
+      {/* Featured Cards row */}
+      &lt;div className="flex flex-row flex-wrap justify-evenly gap-4"&gt;
+        &lt;Card image={elamDP} header="Nexus AI" text="Agentic AI concierge" btnText="View" /&gt;
+        &lt;Card image={sun} header="Bidroher Prohor" text="2D platformer game" btnText="Play" /&gt;
+        &lt;Card image={pulp} header="Digital Fridge" text="Smart recipe generator" btnText="Demo" /&gt;
+      &lt;/div&gt;
+
+      &lt;ContactSection /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;</code></pre>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Simple Tab Switcher Script -->
+  <script>
+    function switchTab(tabId) {
+      // Hide all contents
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      // Show selected content
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.remove('hidden');
+
+      // Update button styling
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.classList.remove('bg-purple-600/20', 'text-purple-300', 'border-purple-500/30');
+        btn.classList.add('text-slate-400', 'border-transparent');
+      });
+      const activeBtn = document.getElementById('tab-' + tabId + '-btn');
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-400', 'border-transparent');
+        activeBtn.classList.add('bg-purple-600/20', 'text-purple-300', 'border-purple-500/30');
+      }
+    }
+  </script>
+</body>
+</html>
