@@ -1,16 +1,15 @@
 import { useState } from "react";
+import ImageCard from "@/components/ui/ImageCard";
 
-function ProjectCard({ static_image, gif, url, caption }) {
-
-    const [image, setImage] = useState(static_image);
-    return (
-        <div>
-            <img className="max-w-md block w-full aspect-video object-cover" src={image}
-                onMouseEnter={() => setImage(gif)}
-                onMouseLeave={() => setImage(static_image)}
-                onClick={() => window.open(url, "_blank")} />
-            <p>{caption}</p>
-        </div>
+function ProjectCard({ image_url, gif_url, link_url, caption }) {
+  const [image, setImage] = useState(image_url);
+  return (
+    <div
+      onMouseEnter={() => setImage(gif_url)}
+      onMouseLeave={() => setImage(image_url)}
+      onClick={() => window.open(link_url, "_blank")}>
+      <ImageCard caption={caption} className="size-auto" imageUrl={image} />
+    </div>
   );
 }
 

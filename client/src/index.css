@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --main: #fd9745;
+    --main-foreground: #000000;
+    --secondary-background: #ffffff;
+    --border: #000000;
+    --shadow: 4px 4px 0px 0px var(--border);
+  }
+}
+
 body {
   background-color: white;
 }

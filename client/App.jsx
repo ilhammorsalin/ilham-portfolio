@@ -16,9 +16,24 @@ function App() {
 
       {/* Featured Cards row */}
       <div className="flex flex-row flex-wrap justify-evenly gap-4">
-        <Card image={elamDP} header="Nexus AI" text="Agentic AI concierge" btnText="View" />
-        <Card image={sun} header="Bidroher Prohor" text="2D platformer game" btnText="Play" />
-        <Card image={pulp} header="Digital Fridge" text="Smart recipe generator" btnText="Demo" />
+        <Card
+          image={elamDP}
+          header="Nexus AI"
+          text="Agentic AI concierge"
+          btnText="View"
+        />
+        <Card
+          image={sun}
+          header="Bidroher Prohor"
+          text="2D platformer game"
+          btnText="Play"
+        />
+        <Card
+          image={pulp}
+          header="Digital Fridge"
+          text="Smart recipe generator"
+          btnText="Demo"
+        />
       </div>
 
       <ContactSection />

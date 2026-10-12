@@ -83,12 +83,13 @@ mindmap
     React
       Introduced
         components
-        state
         events
+        conditional rendering
+      Developing
+        state
       Not Started
         JSX
         props
-        conditional rendering
         list rendering
     Project Skills
       Introduced
@@ -132,6 +133,9 @@ Examples:
 - Server secret: Student explained token stays on server.
 - React state: Student added useState with value and onChange plus Send button.
 - CSS width: Student explained w-full correctly.
+- Event object: Student fixed e.target.text to e.target.value and explained e and target.
+- Conditional show: Student tried vis flag with ternary for p tag.
+- Path alias: Student fixed jsconfig name and added @ map.
 ```
 
 Do not log ordinary questions.
@@ -161,6 +165,7 @@ It does not mean the concept is mastered.
 - **Grid:** `display: grid;`
 - **Grid columns:** `grid-template-columns: repeat(3, 1fr);`
 - **Hover:** `.card:hover { }`
+- **CSS Variables:** `:root { --main: #fd9745; }` and `var(--main)`
 
 ### JavaScript
 
@@ -176,6 +181,7 @@ It does not mean the concept is mastered.
 - **JSX value:** `<p>{name}</p>`
 - **Prop:** `function Greeting({ name }) { }`
 - **State:** `const [count, setCount] = useState(0);`
+- **Component Import:** `import { Button } from "@/components/ui/button.tsx";`
 
 ---
 
