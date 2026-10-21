@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,5 +12,44 @@
       <a href="../index.html">Home Page</a>
       <a href="projects.html">Projects</a>
     </div>
+    <video width="750" height="500" controls>
+      <source
+        src="../assets/Madvillain - All Caps - Stones Throw (360p, h264).mp4"
+        type="video/mp4"
+      />
+      Your browser does not support the video tag.
+    </video>
+
+    <audio controls>
+      <source src="../assets/They Wish - GIJS.mp3" type="" />
+      ur broswer no support audio
+    </audio>
+    <br />
+    <span id="empty" draggable="true">Location Empty</span>
+    <br />
+    <button
+      id="getLocation"
+      onclick="
+        {
+          get_location();
+        }
+      "
+    >
+      Get Location
+    </button>
+    <script>
+      var h = document.getElementById("empty");
+      function get_location() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+          h.innerHTML = "Geolocation is not supported by this browser.";
+        }
+      }
+
+      function showPosition(position) {
+        h.innerHTML = "long: " + position.coords.longitude + "<br>lat: " + position.coords.latitude;
+      }
+    </script>
   </body>
 </html>
